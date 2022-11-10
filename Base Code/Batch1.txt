@@ -1,0 +1,2 @@
+3,Beer Huda,Viet Nam,Drink,06/11/2023,50,2000000,06/11/2022
+3,Beer Larue,Japan,Drink,01/11/2023,50,1500000,06/11/2022

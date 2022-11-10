@@ -1,0 +1,4 @@
+1,Beer Huda,Viet Nam,Drink,06/11/2023,100,2000000,06/11/2022
+1,Beer Larue,Japan,Drink,01/11/2023,100,1500000,06/11/2022
+2,Dau goi,Viet Nam,Comestic,06/11/2023,100,2000000,06/11/2022
+2,Sua tam,Japan,Comestic,01/11/2023,100,1500000,06/11/2022
