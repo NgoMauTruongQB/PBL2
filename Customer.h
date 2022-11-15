@@ -1,38 +1,40 @@
+#pragma once
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
-class Order_Status
+class Customer
 {
-    protected:
-        bool Delivery;
-        bool Payment;
-        // int tinh trang gioa hang;
-        // bool trinh trang thanh toan;
-        // bool gioa hang khong thanh cong - tra hang - giao lai
-    public:
-        Order_Status(bool = true, bool = true);
-        void Set_Delivery(bool);
-        void Set_Payment(bool);
-        bool Get_Delivery();
-        bool Get_Payment();
-        bool Check_Delivery(int);
-        bool Check_Payment(int);
-        bool Check_Order_Status(int);
-        ~Order_Status();
+private:
+	string Name;
+	string Address;
+	string PhoneNumber;
+	bool Condition;
+public:
+	Customer(string = "", string = "", string = "", bool = false);
+	~Customer();
+	void Customer_in();
+	//void Customer_out();
+	string Get_name();
+	string Get_address();
+	string Get_PhoneNumber();
+	string Get_Condition();
+	void Set_Name(string);
+	void Set_Address(string);
+	void Set_PhoneNumber(string);
+	void Set_Condition(bool);
 };
 
-class Customer : public Order_Status
+class ListCustomer : public Customer
 {
-    private:
-        string Customer_name;
-        string Address;
-        string Phone_number;
-        Order_Status Check;
-    public:
-        Customer(string = "", string = "", string = "");
-        void Customer_in();
-        void Customer_out();
-        void Customer_update();
-        ~Customer();
+private:
+	vector<Customer> list;
+	int AmountCustomer;
+public:
+	ListCustomer(int amount = 0);
+	~ListCustomer();
+	void ListCustomer_in(int n);
+	void List_out();
+	int Get_AmountCustomer();
 };

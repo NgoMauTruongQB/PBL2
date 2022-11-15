@@ -1,127 +1,142 @@
+#pragma once
 #include "Customer.h"
+#include "NumberDuck.h"
+#include <sstream>
+#include <string>
+#include <stdio.h>
 
+using namespace NumberDuck;
+using namespace std;
 
-// class Order_Status
-Order_Status::Order_Status(bool d, bool p)
-{
-    this->Delivery = d;
-    this->Payment = p;
-}
-void Order_Status::Set_Delivery(bool check)
-{
-    if(check == 1)
-        this->Delivery = 1;
-    else 
-        this->Delivery = 0;
-}
-void Order_Status::Set_Payment(bool check)
-{
-    if(check == 1)
-        this->Payment = 1;
-    else 
-        this->Payment = 0;
-}
-bool Order_Status::Get_Delivery()
-{
-    return this->Delivery;
-}
-bool Order_Status::Get_Payment()
-{
-    return this->Payment;
-}
-Order_Status::~Order_Status(){
+//========================================= Class Customer ============================================
 
+Customer::Customer(string name, string add, string phone, bool condition)
+{
+	this->Name = name;
+	this->Address = add;
+	this->PhoneNumber = phone;
+	this->Condition = condition;
 }
 
-// class Customer
-
-Customer::Customer(string name, string add, string phone)
+Customer::~Customer()
 {
-    this->Customer_name = name;
-    this->Address = add;
-    this->Phone_number = phone;
 }
+
+string Customer::Get_name()
+{
+	return this->Name;
+}
+
 void Customer::Customer_in()
 {
-    cout << "Customer's name: ";
-    getline(cin, this->Customer_name);
-    cout << "Address: "; 
-    getline(cin, this->Address);
-    cout << "Phone number: "; 
-    cin >> this->Phone_number;
+	cout << "Name's customer: "; getline(cin, this->Name);
+	cout << "Address: "; getline(cin, this->Address);
+	cout << "Phone Number: "; getline(cin, this->PhoneNumber);
+	cout << "Condition: "; cin >> this->Condition;
 }
 
-// void Customer::Customer_in(int x, int y)
-// {
-//     system("cls");
-//     gotoXY(x, y);
-//     cout << (char) 218;
-//     for(int i = 0; i < 60; i++)
-//         cout << (char) 196;
-//     cout << (char) 191;
-//     gotoXY(x, y + 1);
-//     cout << (char) 179;
-//     gotoXY(x + 61, y + 1);
-//     cout << (char) 179;
-//     gotoXY(x, y + 2);
-//     cout << (char) 192;
-//     for(int i = 0; i < 60; i++)
-//         cout << (char) 196;
-//     cout << (char) 217;
-//     cout << "Customer's name: ";
-//     getline(cin, this->Customer_name);
-//     cout << "Address: "; 
-//     getline(cin, this->Address);
-//     cout << "Phone number: "; 
-//     cin >> this->Phone_number;
-// } 
-void Customer::Customer_out()
+string Customer::Get_address()
 {
-    cout << "Name: " << this->Customer_name 
-         << " ,Address: " << this->Address
-         << " ,Phone number: " << this->Phone_number << endl;
+	return this->Address;
+}
 
-}
-void Customer::Customer_update()
+string Customer::Get_PhoneNumber()
 {
-    int n;
-    do
-    {
-        cout << "1. Update Delivery: " << endl;
-        cout << "2. Update Payment: " << endl;
-        cin >> n;
-        switch (n)
-        {
-        case 1:
-            int k;
-            do
-            {
-                cout << "1.Successful delivery..." << endl;
-                cout << "2.Unsuccessful delivery... " << endl;
-                cin >> k;
-                if(k == 1)
-                    Set_Delivery(true);
-                else
-                    Set_Delivery(false);
-            } while (k =! 1 && k != 2);
-            break;
-        case 2:
-            int h;
-            do
-            {
-                cout << "1.Payment completed..." << endl;
-                cout << "2.Payment not completed..." << endl;
-                cin >> h;
-                if(h == 1)
-                    Set_Payment(true);
-                else 
-                    Set_Payment(false);
-            } while (h != 1 && h != 2);
-            break;
-        default:
-            break;
-    }
-    } while (n != 1 && n != 2);
+	return this->PhoneNumber;
 }
-Customer::~Customer(){
+
+string Customer::Get_Condition()
+{
+	if (this->Condition == 1)
+		return "Hoan thanh";
+	return "Chua hoan thanh";
+}
+
+void Customer::Set_Name(string name)
+{
+	this->Name = name;
+}
+
+void Customer::Set_Address(string add)
+{
+	this->Address = add;
+}
+
+void Customer::Set_PhoneNumber(string phone)
+{
+	this->PhoneNumber = phone;
+}
+
+void Customer::Set_Condition(bool check)
+{
+	this->Condition = check;
+}
+
+// =================================== Class ListCustomer ==========================================
+
+ListCustomer::ListCustomer(int amount )
+{
+	this->AmountCustomer = amount;
+}
+
+ListCustomer::~ListCustomer()
+{
+}
+
+void ListCustomer::ListCustomer_in(int n)
+{
+	Customer a;
+	this->AmountCustomer = n;
+	for (int i = 0; i < n; i++)
+	{
+		a.Customer_in();
+		cin.ignore();
+		this->list.push_back(a);
+	}
+}
+
+void ListCustomer::List_out()
+{
+	ListCustomer a;
+	Workbook workbook("");
+	Worksheet* pWorksheet = workbook.GetWorksheetByIndex(0);
+
+	for (uint16_t i = 0; i < this->Get_AmountCustomer(); i++)
+	{
+		Cell* pCell = pWorksheet->GetCell(0, i);
+		pCell->SetFloat(i + 1);
+		//pCell->SetFloat(i * 2.34f);
+	}
+	int j = 0;
+	for (Customer i : this->list)
+	{
+		string s;
+		s = i.Get_name();
+
+		char* g = const_cast<char*>(s.c_str());
+		pWorksheet->GetCell(1, j)->SetString(g);
+		s = i.Get_address();
+		g = const_cast<char*>(s.c_str());
+		pWorksheet->GetCell(2, j)->SetString(g);
+		s = i.Get_PhoneNumber();
+		g = const_cast<char*>(s.c_str());
+		pWorksheet->GetCell(3, j)->SetString(g);
+		s = i.Get_Condition();
+		g = const_cast<char*>(s.c_str());
+		pWorksheet->GetCell(4, j)->SetString(g);
+		
+	}
+	workbook.Save("ListCustomer.xls");
+
+	Workbook* pWorkbookIn = new Workbook("");
+	if (pWorkbookIn->Load("ListCustomer.xls"))
+	{
+		Worksheet* pWorksheetIn = pWorkbookIn->GetWorksheetByIndex(0);
+		Cell* pCellIn = pWorksheetIn->GetCell(2, 1);
+		printf("Formula: %s\n", pCellIn->GetFormula());
+	}
+}
+int ListCustomer::Get_AmountCustomer()
+{
+	return this->AmountCustomer;
 }
