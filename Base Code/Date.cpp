@@ -2,9 +2,22 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 using namespace std;
-//class Date
-Date::Date(int day, int month, int year){
+
+string distance()
+{
+    string dis = "";
+    for (int i = 0; i < 25; i++)
+        dis += " ";
+    return dis;
+}
+bool Date::Check_full_real_time = false;
+Date::Date(int day, int month, int year)
+{
+    this->hour = 0;
+    this->minute =0;
+    this->second = 0;
     this->Day = day;
     this->Month = month;
     this->Year = year;
@@ -13,11 +26,20 @@ Date::Date(int day, int month, int year){
 void Date::Input()
 {
     string date;
+    int count = 0;
     do
     {
         try
         {
-            cout << "(dd/mm/yyyy): "; cin >> date; 
+            if (count == 0)
+            {
+               cout << "(dd/mm/yyyy): "; getline(cin, date); 
+               count++;
+            }   
+            else 
+            {
+                cout << distance() << "(dd/mm/yyyy): "; getline(cin, date); 
+            }
             if (date[2] != '/' || date[5] != '/' || date.length() != 10)
             {
                 throw string("Date's form is incorrect...");
@@ -30,7 +52,7 @@ void Date::Input()
         }
         catch(string e)
         {
-            cout << e << endl;
+            cout << distance() << e << endl;
         }
     }while(1);
 }
@@ -47,7 +69,7 @@ void Date::Input_from_file(fstream &file_in)
     this->Year = stoi(date.substr(6, date.length() - 6));
     this->Check_Valid();
 }
-void Date::Input(string date)
+void Date::str_to_Date(string date)
 {
     if (date[2] != '/' || date[5] != '/' || date.length() != 10)
     {
@@ -60,13 +82,35 @@ void Date::Input(string date)
 }
 void Date::Output()
 {
-    if (this->Day < 10) cout << "0" << this->Day;
-    else cout << this->Day;
-    cout << "/";
-    if (this->Month < 10) cout << "0" << this->Month;
-    else cout << this->Month;
-    cout << "/";
-    cout << this->Year << endl; 
+    if (Check_full_real_time == false)
+    {
+        if (this->Day < 10) cout << "0" << this->Day; 
+        else cout << this->Day;
+        cout << "/";
+        if (this->Month < 10) cout << "0" << this->Month;
+        else cout << this->Month;
+        cout << "/";
+        cout << this->Year << endl; 
+    }
+    else
+        cout << "Time: " << this->hour << ":" << this->minute << ":" << this->second << " Date:"
+        << this->Day << "/" << this->Month << "/" << this->Year << endl;
+}
+void Date::Output_to_file(ofstream& out)
+{
+    if (Check_full_real_time == false)
+    {
+        if (this->Day < 10) out << "0" << this->Day; 
+        else out << this->Day;
+        out << "/";
+        if (this->Month < 10) out << "0" << this->Month;
+        else out << this->Month;
+        out << "/";
+        out << this->Year << endl; 
+    }
+    else
+        out << "Time: " << this->hour << ":" << this->minute << ":" << this->second << " Date:"
+        << this->Day << "/" << this->Month << "/" << this->Year << endl;
 }
 bool Date::Check_Leap_Year()
 {
@@ -117,6 +161,7 @@ bool Date::operator>(const Date& d)
     else if (this->Day < d.Day) return false;
     return true;
 }
+
 void Date::Set_day(const int& day)
 {
     this->Day = day;
@@ -144,7 +189,20 @@ int Date::Get_year()
 {
     return this->Year;
 }
-string Date::Get_date_str()
+int Date::Get_hour()
+{
+    return this->hour;
+
+}
+int Date::Get_minute()
+{
+    return this->minute;
+}
+int Date::Get_second()
+{
+    return this->second;
+}
+string Date::to_String()
 {
     string date_str = "";
     date_str += (this->Day < 10) ? ("0" + to_string(this->Day)) : to_string(this->Day);
@@ -153,6 +211,27 @@ string Date::Get_date_str()
     date_str += "/";
     date_str += to_string(this->Year);
     return date_str;
+}
+void Date::Set_full_real_time()
+{
+    Check_full_real_time = true;
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    this->hour = ltm->tm_hour;
+    this->minute = ltm->tm_min;
+    this->second = ltm->tm_sec;
+    this->Day = ltm->tm_mday;
+    this->Month = ltm->tm_mon + 1;
+    this->Year = 1900 + ltm->tm_year;
+}
+void Date::Set_day_real_time()
+{
+    Check_full_real_time = false;
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    this->Day = ltm->tm_mday;
+    this->Month = ltm->tm_mon + 1;
+    this->Year = 1900 + ltm->tm_year;
 }
 Date::~Date(){
 }

@@ -1,17 +1,20 @@
+#pragma once
 #include <string>
 using namespace std;
+string distance();
 class Date
 {
     private:
-        int Day;
-        int Month;
-        int Year;
+        int Day, Month, Year;
+        int hour, minute, second;
     public:
+        static bool Check_full_real_time;
         Date(int = 1, int = 1, int = 2022);
         void Input();
         void Input_from_file(fstream&);
-        void Input(string);
+        void str_to_Date(string);
         void Output();
+        void Output_to_file(ofstream&);
         bool Check_Leap_Year();
         int Month_Day();
         void Check_Valid();
@@ -24,6 +27,11 @@ class Date
         int Get_day();
         int Get_month();
         int Get_year();
-        string Get_date_str();
+        int Get_hour();
+        int Get_minute();
+        int Get_second();
+        string to_String();
+        void Set_full_real_time();
+        void Set_day_real_time();
         ~Date();
 };

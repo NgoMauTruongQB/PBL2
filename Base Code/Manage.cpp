@@ -1,6 +1,5 @@
 #include "Manage.h"
-#include <iomanip>
-using namespace std;
+// using namespace std;
 //class GoodsManagement
 GoodsManagement::GoodsManagement()
 {
@@ -20,16 +19,12 @@ int GoodsManagement::Get_export_length()
 {
     return this->Export_length;
 }
-bool GoodsManagement::Check_empty()
-{
-    return (this->All_goods.empty());
-}
 int GoodsManagement::Find_id(string id)
 {
     for (int i = 0; i < this->All_goods.size(); i++)
     {
         if ((*this)[i].Get_id().compare(id) == 0)
-        return 0;
+        return i;
     } 
     return -1;
 }
@@ -60,75 +55,76 @@ void GoodsManagement::Input_from_file(string filename)
     }
     file_in.close();
 }
-void GoodsManagement::Input(string distance)
+void GoodsManagement::Input()
 {
     int n;
-    cout << distance << "The number of goods which you want to import: "; cin >> n;
+    cout << distance() << "The number of goods which you want to import: "; cin >> n; cin.ignore();
     this->Import_length = n;
     for(int i = 0; i < this->Import_length; i++)
     {
-        cout << distance << i + 1 << ". " << endl;
+        cout << distance() << i + 1 << ". " << endl;
         Goods s;
         cin.ignore();
-        s.Input(distance);
+        s.Input();
         s.Set_id();
         this->All_goods.push_back(s);
     } 
 }
 
 //chua viet 
-void GoodsManagement::Output(string distance)
+void GoodsManagement::Export(ListCustomer& _list_customer, ListBill& _list_bill)
 {
-    // int n;
-    // cout << " ===== GOODS EXPORT ===== " << endl;
-    // cout << " Enter imtem number: "; cin >> n;
-    // this->Export_length = n;
-    // for(int i = 0; i < this->Export_length; i++)
-    // {
-    //     cout << " " << i + 1 << ". " << endl;
-    //     Goods s;
-    //     cout << "Enter name item: ";
-    //     // Nhap vao ten loai hang hoa 
-    //     // Nhap vao so luong
-    //     // Nhap vao gia ban 
-    // }
-
     int n;
-    cout << distance << "The number of goods which you want to export: "; cin >> n;
+    Bill b;
+    cout << distance() << "The number of goods which you want to export: "; cin >> n;
     this->Export_length = n;
     for(int i = 0; i < this->Export_length; i++)
     {
-        cout << distance << i + 1 << ". " << endl;
         map<int, string> mapping;
         int select, exp_amount, index;
+        bool _check_amount = false;
+        cout << distance() << i + 1 << ". " << endl;
         string goods_name;
-        cout << distance << "Enter the goods of name which you want to export: "; cin.ignore(); getline(cin, goods_name);
-        this->Show_information(distance, mapping, goods_name);
-        cout << distance << "Enter the number you want to export: "; cin >> select;
-        index = this->Find_id(mapping.at(select));
+        cout << distance() << "Enter the goods of name which you want to export: "; cin.ignore(); getline(cin, goods_name);
+        if (this->Find_name_goods(goods_name) == false) 
+            throw string("Don't have this goods in the depot!");
+        this->Show_information(mapping, goods_name);
+        cout << distance() << "Enter the number you want to export: "; cin >> select;
+        index = this->Find_id(mapping[select]);
         if (index == -1) throw string ("ID is not found");
-        cout << distance << "Amount: "; cin >> exp_amount;
-        try
+        cout << distance() << "Amount: "; cin >> exp_amount;
+        _check_amount = (exp_amount > (*this)[index].Get_amount());
+        while (_check_amount == true)
         {
-            (*this)[index].Set_amount_after_export(exp_amount);
+            cout << distance() << "Amount is not valid... Enter again: "; cin >> exp_amount;
+            _check_amount = (exp_amount > (*this)[index].Get_amount());
         }
-        catch(string e)
-        {
-            cout << distance << e << endl;
-        }
-        Get_real_time((*this)[index].Get_export_date());
-
-
-    } 
+        (*this)[index].Set_export_amount(exp_amount);
+        (*this)[index].Get_export_date().Set_day_real_time();
+        (*this)[index].Set_sale_cost();
+        (*this)[index].Set_status(-1);
+        Goods *g = new Goods;
+        g = &(*this)[index];
+        b.Add_goods(g);
+    }
+    Date _local_time;
+    _local_time.Set_full_real_time();
+    b.Set_ID(_local_time);
+    _list_bill.Add(b);
+    Customer c;
+    cin.ignore(); cin >> c;
+    c.Set_Bill_ID(b.Get_ID());
+    _list_customer.Add(c);
+    cout << distance(); system("pause");
 }
 void GoodsManagement::Print_bill(string fileName, bool isImportBill)
 {
     ofstream out;
     out.open(fileName, ios::trunc);
     double totalBill = 0;
-    Date localDate;
-    Get_real_time(localDate);
-    cin.ignore();
+    Date localTime;
+    localTime.Set_full_real_time();
+    localTime.Output_to_file(out);
     if (isImportBill == true)
     {
         out         << "                                     IMPORT BILL                                      "
@@ -142,7 +138,7 @@ void GoodsManagement::Print_bill(string fileName, bool isImportBill)
             {
                 count++;
                 out << endl << "|" << setw(4) << count << " |" << setw(18) << (*this)[i].Get_good_name() << "      |" 
-                    << setw(14) << (*this)[i].Get_origin() << "     |" << setw(9) << (*this)[i].Get_import_amount() << " |"  
+                    << setw(14) << (*this)[i].Get_origin() << "     |" << setw(9) << (*this)[i].Get_amount() << " |"  
                     << setw(18) << setprecision(18) << (*this)[i].Get_cost() << "    |" << endl;
                 out << " ____________________________________________________________________________________ ";    
                 (*this)[i].Set_status(1);
@@ -166,93 +162,99 @@ void GoodsManagement::Print_bill(string fileName, bool isImportBill)
                 count++;
                 out << endl << "|" << setw(4) << count << " |" << setw(18) << (*this)[i].Get_good_name() << "      |" 
                     << setw(14) << (*this)[i].Get_origin() << "     |" << setw(9) << (*this)[i].Get_export_amount() << " |"  
-                    << setw(18) << setprecision(18) << (*this)[i].Get_export_cost() * (*this)[i].Get_export_amount() << "    |" << endl;
+                    << setw(18) << setprecision(18) << (*this)[i].Get_sale_cost() * (*this)[i].Get_export_amount() << "    |" << endl;
                 out << " ____________________________________________________________________________________ ";    
-                if ((*this)[i].Get_import_amount() > 0) ((*this)[i].Set_status(1));
+                if ((*this)[i].Get_amount() > 0) ((*this)[i].Set_status(1));
                 else this->Delete((*this)[i].Get_id());
-                totalBill += (*this)[i].Get_export_cost() * (*this)[i].Get_export_amount();
+                totalBill += (*this)[i].Get_sale_cost() * (*this)[i].Get_export_amount();
             }
         }
         out << endl << " -------------------------------------------------------------------------------------" << endl;
         out << "Total: " << setprecision(20) << totalBill << endl;
     }
+    map<string, int> mapping; 
+    int i = 0;
+    while (i < this->All_goods.size())
+    {
+        mapping[(*this)[i].Get_id()]++;
+        if (mapping[(*this)[i].Get_id()] > 1) 
+        {
+            int temp = this->Find_id((*this)[i].Get_id());
+            (*this)[temp].Set_amount((*this)[temp].Get_amount() + (*this)[i].Get_amount());
+            (*this)[temp].Set_cost((*this)[temp].Get_cost() + (*this)[i].Get_cost());
+            mapping[(*this)[i].Get_id()]--;
+            this->All_goods.erase(this->All_goods.begin() + i);
+        }
+        else i++;
+    }
     out.close();
 }
-void GoodsManagement::Show_information(string distance, map<int,string>& mapping, string Goods_name)
+void GoodsManagement::Show_information(map<int,string>& mapping, string Goods_name)
 {
     if (this->All_goods.empty() == true || (Goods_name.compare("") != 0 && this->Find_name_goods(Goods_name) == false)) 
     {
-        cout << distance << "Don't have this goods in the depot!" << endl;
+        cout << distance() << "Don't have this goods in the depot!" << endl;
     }
     else if (Goods_name.compare("") == 0)
     {
-        cout << distance << " ___________________________________________________________________________________________________________________________ " << endl
-             << distance << "                                                    ALL GOODS INFORMATION                                                    " << endl
-             << distance << " --------------------------------------------------------------------------------------------------------------------------- " << endl
-             << distance << "| STT | Lo |      Ten san pham      |     Nguon goc     |   Loai   |  Ngay het han  | So Luong |  Ngay nhap  |    Don gia   |" << endl
-             << distance << " ____________________________________________________________________________________________________________________________" << endl;
+        cout << distance() << " ___________________________________________________________________________________________________________________________ " << endl
+             << distance() << "                                                    ALL GOODS INFORMATION                                                    " << endl
+             << distance() << " --------------------------------------------------------------------------------------------------------------------------- " << endl
+             << distance() << "| STT | Lo |      Ten san pham      |     Nguon goc     |   Loai   |  Ngay het han  | So Luong |  Ngay nhap  |    Don gia   |" << endl
+             << distance() << " ____________________________________________________________________________________________________________________________" << endl;
         for (int i = 0; i < this->All_goods.size(); i++) 
         {
             mapping.insert({i+1, (*this)[i].Get_id()});
-            cout << distance << "|" << setw(4) << i + 1 << " |";
-            (*this)[i].Output(distance);
-            cout << distance << " ___________________________________________________________________________________________________________________________ " << endl;
+            cout << distance() << "|" << setw(4) << i + 1 << " |";
+            (*this)[i].Output();
+            cout << distance() << " ___________________________________________________________________________________________________________________________ " << endl;
         }
-        cout << distance << " ----------------------------------------------------------- END ----------------------------------------------------------- " << endl;
+        cout << distance() << " ----------------------------------------------------------- END ----------------------------------------------------------- " << endl;
     }
     else
     {
         int count = 0;
-        cout << distance << " ___________________________________________________________________________________________________________________________ " << endl
-             << distance << "                                                    ALL GOODS INFORMATION                                                    " << endl
-             << distance << " --------------------------------------------------------------------------------------------------------------------------- " << endl
-             << distance << "| STT | Lo |      Ten san pham      |     Nguon goc     |   Loai   |  Ngay het han  | So Luong |  Ngay nhap  |    Don gia   |" << endl
-             << distance << " ____________________________________________________________________________________________________________________________" << endl;
+        cout << distance() << " ___________________________________________________________________________________________________________________________ " << endl
+             << distance() << "                                                    ALL GOODS INFORMATION                                                    " << endl
+             << distance() << " --------------------------------------------------------------------------------------------------------------------------- " << endl
+             << distance() << "| STT | Lo |      Ten san pham      |     Nguon goc     |   Loai   |  Ngay het han  | So Luong |  Ngay nhap  |    Don gia   |" << endl
+             << distance() << " ____________________________________________________________________________________________________________________________" << endl;
         for (int i = 0; i < this->All_goods.size(); i++)
         {
             if ((*this)[i].Get_good_name().compare(Goods_name) == 0)
             {
                 count++;
                 mapping.insert({count, (*this)[i].Get_id()});
-                cout << distance << "|" << setw(4) << count << " |";
-                (*this)[i].Output(distance);
-                cout << distance << " ___________________________________________________________________________________________________________________________ " << endl;
+                cout << distance() << "|" << setw(4) << count << " |";
+                (*this)[i].Output();
+                cout << distance() << " ___________________________________________________________________________________________________________________________ " << endl;
             }
         }    
-        cout << distance << " ----------------------------------------------------------- END ----------------------------------------------------------- " << endl;    
+        cout << distance() << " ----------------------------------------------------------- END ----------------------------------------------------------- " << endl;    
     }
 }
-// chua biet 
-// void GoodsManagement::Export_bill(ofstream& out)
-// {
-//     //In ra file hoa don xuat hang
-//     // cout ngay thuc te hoa don duoc tao
-//     //Tinh trang thanh toan
-//     // Ten khach hang 
-//     // Dia chi khách hàng 
-//     // số điện thoại của khách hàng 
-//     // Tổng số tiền cần thanh toán
-//     // Tên người xuất
-//     // Ten khách hàng 
-// }
 void GoodsManagement::Update_file_database(string filename)
 {
     fstream out;
     out.open(filename, ios::out | ios::trunc);
     for (int i = 0; i < this->All_goods.size(); i++)
     {
-        out << (*this)[i].Get_Batch() << "," << (*this)[i].Get_good_name() << ","
+        out << (*this)[i].Get_batch() << "," << (*this)[i].Get_good_name() << ","
             << (*this)[i].Get_origin() << "," << (*this)[i].Get_type() << ","
-            << (*this)[i].Get_EXP_str() << "," << (*this)[i].Get_import_amount() << ","
-            << setprecision(18) << (*this)[i].Get_cost() << "," << (*this)[i].Get_Impdate_str();
+            << (*this)[i].Get_EXP().to_String() << "," << (*this)[i].Get_amount() << ","
+            << setprecision(18) << (*this)[i].Get_cost() << "," << (*this)[i].Get_import_date().to_String();
         if (i < this->All_goods.size() - 1) out << endl;
     }
     out.ignore();
 }
 Goods& GoodsManagement::operator[](int index)
 {
-    static Goods data;
-    return (index < 0 || index > this->All_goods.size()) ? data : this->All_goods[index];
+    if (index < 0 || index > this->All_goods.size())
+    {
+        static Goods data;
+        return data;
+    }
+    else return this->All_goods[index];
 }
 void GoodsManagement::Update(int index, int select)
 {
@@ -276,26 +278,23 @@ void GoodsManagement::Update(int index, int select)
     }
     case 3:
     {
-        string type;
-        getline(cin, type);
-        Standardized(type);
-        (*this)[index].Set_type(type);
-        break;
-    }
-    case 4:
-    {
         string origin;
         getline(cin, origin);
         Standardized(origin);
         (*this)[index].Set_origin(origin);
         break;
     }
+    case 4:
+    {
+        string type;
+        getline(cin, type);
+        Standardized(type);
+        (*this)[index].Set_type(type);
+        break;
+    }
     case 5:
     {
-        string date;
-        getline(cin, date);
-        Standardized(date);
-        (*this)[index].Set_EXP(date);
+        (*this)[index].Get_EXP().Input();
         break;
     }
     case 6:
@@ -309,15 +308,12 @@ void GoodsManagement::Update(int index, int select)
     {
         float import_cost;
         cin >> import_cost;
-        (*this)[index].Set_import_cost(import_cost);
+        (*this)[index].Set_cost(import_cost);
         break;
     }
     case 8:
     {
-        string import_date;
-        getline(cin, import_date);
-        Standardized(import_date);
-        (*this)[index].Set_import_date(import_date);
+        (*this)[index].Get_import_date().Input();
         break;
     }
     }
@@ -440,31 +436,3 @@ void GoodsManagement::Print_list_ID()
 GoodsManagement::~GoodsManagement(){
 
 }
-
-//friend function
-void Swap(Goods& a, Goods& b)
-{
-    Goods temp;
-    temp = a;
-    a = b;
-    b = temp;
-}
-void Information_of_customer()
-{
-    string name, address, phoneNumber;
-    cout << " ===== ENTER IFORMATION OF CUSTOMER ===== " << endl;
-    cout << " Full name: "; getline(cin, name);
-    cout << " Address: "; getline(cin, address);
-    cout << " Phone number: "; getline(cin, phoneNumber);
-}
-void Get_real_time(Date& localDate)
-{
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
-    cout << "Time: " << ltm->tm_hour << ":" << ltm->tm_min << ":" << ltm->tm_sec << " Date:"
-         << ltm->tm_mday << "/" << 1 + ltm->tm_mon << "/" << 1900 + ltm->tm_year << endl;
-    localDate.Set_day(ltm->tm_mday);
-    localDate.Set_month(ltm->tm_mon + 1);
-    localDate.Set_year(ltm->tm_year + 1900);
-}
-
