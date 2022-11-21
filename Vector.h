@@ -11,17 +11,19 @@ class vector
         T *array;
         void capacityUp(int newCapacity); // tăng số lượng phần tử của vector
     public:
-        vector(int = 100);
+        vector(int = 0);
         ~vector();
         vector& operator= (vector &vt); 
         int size(); // trả về số lượng phần tử được sử dụng trong vector
         bool empty(); // Trả về dữ liệu vùng chứa có trống hay không, nếu trống thì trả về True, nếu có phần tử thì trả về False
         T& operator[] (int index); 
+        T& at(int index); // tương tự như đa năng hóa toán tử truy cập
         void push_back(T value); // them phần tử vao cuoi vector
         void pop_back(); // xoá phần tử ở cuối vector
         void insert(int position,T value); // chèn phần tử value có kiểu dữ liệu T vào vị trí position
         void erase(int pos); // xoá phần tử ở vị trí pos
         void clear(); // loại bỏ tất cả các phần tử của vùng chứa vector.
+        T* data(); // trả về con trỏ trực tiếp đến memory array được sử dụng bên trong vector để lưu trữ các thành phần của nó
 };
 
 template <typename T>
@@ -77,53 +79,93 @@ int vector<T>::size()
 template <typename T>
 bool vector<T>::empty()
 {
-    if(this->Size == 0)
-        return 1;
-    return 0;
+    return (this->Size == 0);
 }
 
 template <typename T>
 T & vector<T>::operator[](int index)
 {
-    return this->array[index];
+    if (index > this->Size || index < 0)
+    {
+        static T temp;
+        return temp;
+    }
+    return *(this->array + index);
 }
 
+template <typename T>
+T & vector<T>::at(int index)
+{
+    if (index > this->Size || index < 0)
+    {
+        static T temp;
+        return temp;
+    }
+    return *(this->array + index);
+}
 template <typename T>
 void vector<T>::push_back(T value)
 {
     if(this->Size == this->capacity)
         capacityUp(2 * this->Size);
-    this->array[this->Size] = value;
-    this->Size++;
+    T* temp = new T[++this->Size];
+    for (int i = 0; i < this->Size - 1; ++i)
+    {
+        temp[i] = this->array[i];
+    }
+    temp[this->Size - 1] = value;
+    delete this->array;
+    this->array = temp;
 }
 
 template <typename T>
 void vector<T>::pop_back()
 {
-    size--;
+    if(!this->empty())
+    {
+        delete (this->array + this->Size - 1);
+        this->Size--;
+    }
 }
 
 template <typename T>
-void vector<T>::insert(int position,T value)
+void vector<T>::insert(int position, T value)
 {
     if(this->Size == this->capacity)
         capacityUp(2 * this->Size);
-    for(int i = this->Size; i > position; i--)
-        this->array[i] = this->array[i - 1];
-    this->array[position] = value;
-    this->Size++;
+    T* temp = new T[++this->Size];
+    for (int i = 0; i < position; i++)
+    {
+        temp[i] = this->array[i];
+    }
+    temp[position] = value;
+    for (int i = position + 1; i < this->Size; i++)
+    {
+        temp[i] = this->array[i - 1];
+    }
+    delete this->array;
+    this->array = temp;
 }
 
 template <typename T>
 void vector<T>::erase(int pos)
 {
-    for(int i = pos; i < this->Size - 1; i++)
-        this->array[i] = this->array[i + 1];
-    this->Size--;
+    if (!this->empty() && pos > 0 && pos < this->Size)
+    {
+        for(int i = pos; i < this->Size - 1; i++)
+            this->array[i] = this->array[i + 1];
+        delete (this->array + this->Size - 1);
+        this->Size--;
+    }
 }
-
 template <typename T>
 void vector<T>::clear()
 {
     this->Size = 0;
+}
+
+template <typename T>
+T* vector<T>::data()
+{
+    return array;
 }

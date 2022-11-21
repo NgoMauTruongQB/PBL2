@@ -1,17 +1,28 @@
 #include "Vector.h"
+#include <iostream>
 using namespace std;
 
 int main()
 {
     vector<int> a;
-    int n = 50;
+    int n = 10;
     for (int i = 0; i < n; i ++)
     {
         a.push_back(i);
     }
-    cout << a[30];
-    a.insert(0,2);
-    cout << a[0];
+    for (int i = 0 ; i < a.size(); i++)
+    {
+        cout << a.at(i) << " ";
+    }
+    cout << endl;
+    a.insert(2, 111);
+    a.erase(5);
     a.clear();
+    for (int i = 0 ; i < a.size(); i++)
+    {
+        cout << a.at(i) << " ";
+    }
+    cout << endl << a.data() << endl;
+    cout << &a.at(0) << endl;
     return 0;
 }
