@@ -56,18 +56,20 @@ vector<T>::~vector()
 template <typename T>
 vector<T> & vector<T>::operator=(vector & vt)
 {
-    if(this != vt)
+    int temp = vt.Size;
+    if (this->Size > temp)
     {
-        delete[] this->array;
-        this->Size = vt.Size;
-        this->capacity = vt.capacity;
-        this->array = new T[capacity];
+        for (int i = temp; i < this->Size; i++)
+        {
+            delete (this->array + i);
+        }
     }
-    for(int i = 0; i < this->Size; i++)
+    for (int i = 0; i < temp; ++i)
     {
-        this->array[i] = vt.array[i];
+        this->array[i] = vt[i];
     }
-    return *this; // tra ve vector ve trai sao khi gan xong
+    this->Size = temp;
+    return (*this);
 }
 
 template <typename T>
