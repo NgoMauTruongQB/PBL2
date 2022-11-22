@@ -1,4 +1,4 @@
-#include <iostream>
+#pragma once
 #include <string>
 using namespace std;
 
@@ -16,7 +16,7 @@ class vector
         vector& operator= (vector &vt); 
         int size(); // trả về số lượng phần tử được sử dụng trong vector
         bool empty(); // Trả về dữ liệu vùng chứa có trống hay không, nếu trống thì trả về True, nếu có phần tử thì trả về False
-        T& operator[] (int index); 
+        T& operator[] (const int index); 
         T& at(int index); // tương tự như đa năng hóa toán tử truy cập
         void push_back(T value); // them phần tử vao cuoi vector
         void pop_back(); // xoá phần tử ở cuối vector
@@ -54,7 +54,7 @@ vector<T>::~vector()
 }
 
 template <typename T>
-vector<T> & vector<T>::operator=(vector & vt)
+vector<T>& vector<T>::operator=(vector &vt)
 {
     int temp = vt.Size;
     if (this->Size > temp)
@@ -85,7 +85,7 @@ bool vector<T>::empty()
 }
 
 template <typename T>
-T & vector<T>::operator[](int index)
+T & vector<T>::operator[](const int index)
 {
     if (index > this->Size || index < 0)
     {
@@ -116,7 +116,7 @@ void vector<T>::push_back(T value)
         temp[i] = this->array[i];
     }
     temp[this->Size - 1] = value;
-    delete this->array;
+    delete[] this->array;
     this->array = temp;
 }
 
@@ -145,14 +145,14 @@ void vector<T>::insert(int position, T value)
     {
         temp[i] = this->array[i - 1];
     }
-    delete this->array;
+    delete[] this->array;
     this->array = temp;
 }
 
 template <typename T>
 void vector<T>::erase(int pos)
 {
-    if (!this->empty() && pos > 0 && pos < this->Size)
+    if (!this->empty() && pos >= 0 && pos < this->Size)
     {
         for(int i = pos; i < this->Size - 1; i++)
             this->array[i] = this->array[i + 1];
