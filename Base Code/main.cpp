@@ -1,6 +1,16 @@
 #include "Manage.h"
+#include<io.h>
+#include<fcntl.h>
 using namespace std;
 string dis = distance();
+wstring distance2(int length)
+{
+    wstring dis = L"";
+    for (int i = 0; i < length; i++)
+        dis += L" ";
+    return dis;
+}
+wstring dis2 = distance2(65);
 void Check_valid_option(string checkValidOption, int &select, int maxValue)
 {
     bool valid = true;
@@ -103,12 +113,12 @@ void Import(GoodsManagement &g)
     {
         string checkValidOption;
         system("cls");
-        cout << dis << " ------ TINH NANG NHAP HANG ------ " << endl
-             << dis << "|       1. Tu file                |" << endl
-             << dis << "|       2. Tu nguoi su dung       |" << endl
-             << dis << "|       3. Quay lai               |" << endl
-             << dis << " --------------------------------- " << endl
-             << dis << " Lua chon: ";
+        wcout << dis2 << L" ┌──────────TINH NANG NHAP HANG──────────┐"<< endl
+             << dis2 << L" │      1. Tu file                       │" << endl
+             << dis2 << L" │      2. Tu nguoi su dung              │" << endl
+             << dis2 << L" │      3. Quay lai                      │" << endl
+             << dis2 << L" └───────────────────────────────────────┘" << endl
+             << dis2 << L" Lua chon: ";
         Check_valid_option(checkValidOption, select, 3);
         switch (select)
         {
@@ -146,13 +156,13 @@ void Export(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
     {
         string checkValidOption;
         system("cls");
-        cout << dis << " ------ TINH NANG XUAT HANG ------ " << endl
-             << dis << "|       1. Theo goi               |" << endl
-             << dis << "|       2. Theo nguoi su dung     |" << endl
-             << dis << "|       3. In hoa don             |" << endl
-             << dis << "|       4. Quay lai               |" << endl
-             << dis << "---------------------------------- " << endl
-             << dis << " Lua chon: ";
+        wcout << dis2 << L" ┌──────────TINH NANG XUAT HANG──────────┐" << endl
+             << dis2 << L" │      1. Theo goi                      │" << endl
+             << dis2 << L" │      2. Theo nguoi su dung            │" << endl
+             << dis2 << L" │       3. In hoa don                   │" << endl
+             << dis2 << L" │       4. Quay lai                     │" << endl
+             << dis2 << L" └───────────────────────────────────────┘" << endl
+             << dis2 << L" Lua chon: ";
         Check_valid_option(checkValidOption, select, 4);        
         switch (select)
         {
@@ -235,18 +245,18 @@ void Update(GoodsManagement &g)
                 string checkValidOption;
                 system("cls");
                 g.Search(mapping, Goods_name, 1);
-                cout << dis << " ------ TINH NANG CAP NHAT ------ " << endl
-                    << dis << "|         1. Lo                   |" << endl
-                    << dis << "|         2. Ten                  |" << endl
-                    << dis << "|         3. Nguon goc            |" << endl
-                    << dis << "|         4. Loai                 |" << endl
-                    << dis << "|         5. Han su dung          |" << endl
-                    << dis << "|         6. So luong             |" << endl
-                    << dis << "|         7. Gia nhap             |" << endl
-                    << dis << "|         8. Ngay nhap            |" << endl
-                    << dis << "|         9. Quay lai             |" << endl
-                    << dis << " --------------------------------- " << endl
-                    << dis << " Lua chon: ";
+                wcout << dis2 <<L"┌────────TINH NANG CAP NHAT───────┐" << endl
+                    << dis2 << L"│         1. Lo                   │" << endl
+                    << dis2 << L"│         2. Ten                  │" << endl
+                    << dis2 << L"│         3. Nguon goc            │" << endl
+                    << dis2 << L"│         4. Loai                 │" << endl
+                    << dis2 << L"│         5. Han su dung          │" << endl
+                    << dis2 << L"│         6. So luong             │" << endl
+                    << dis2 << L"│         7. Gia nhap             │" << endl
+                    << dis2 << L"│         8. Ngay nhap            │" << endl
+                    << dis2 << L"│         9. Quay lai             │" << endl
+                    << dis2 << L"└─────────────────────────────────┘ " << endl
+                    << dis2 << L" Lua chon: ";
                 Check_valid_option(checkValidOption, select, 9);                    
                 switch (select)
                 {
@@ -359,13 +369,13 @@ void Sort(GoodsManagement &g, map<int, string> mapping)
         string checkValidOption;
         system("cls");
         g.Show_information();
-        cout << dis << " ------- TINH NANG SAP XEP ------ " << endl
-             << dis << "|       1. Theo ten              |" << endl
-             << dis << "|       2. Theo han su dung      |" << endl
-             << dis << "|       3. Theo ngay nhap        |" << endl
-             << dis << "|       4. Theo loai             |" << endl
-             << dis << "|       5. Quay lai              |" << endl
-             << dis << " -------------------------------- " << endl;
+        wcout << dis2 << L"┌───────TINH NANG SAP XEP────────┐" << endl
+             << dis2 << L"│       1. Theo ten              │" << endl
+             << dis2 << L"│       2. Theo han su dung      │" << endl
+             << dis2 << L"│       3. Theo ngay nhap        │" << endl
+             << dis2 << L"│       4. Theo loai             │" << endl
+             << dis2 << L"│       5. Quay lai              │" << endl
+             << dis2 << L"└────────────────────────────────┘ " << endl;
         cout << dis << " Lua chon: ";
         Check_valid_option(checkValidOption, select, 5);
         if (select < 5)
@@ -385,12 +395,12 @@ void Search(GoodsManagement &g)
     {
         string checkValidOption;
         system("cls");
-        cout << dis << " ------- TINH NANG TIM KIEM ------- " << endl
-             << dis << "|       1. Theo ten san pham       |" << endl
-             << dis << "|       2. Theo loai san pham      |" << endl
-             << dis << "|       3. Theo lo hang            |" << endl
-             << dis << "|       4. Quay lai                |" << endl
-             << dis << " ---------------------------------- " << endl;
+        wcout << dis2 << L"┌──────────TINH NANG TIM KIEM──────────┐ " << endl
+             << dis2 << L"│       1. Theo ten san pham           │" << endl
+             << dis2 << L"│       2. Theo loai san pham          │" << endl
+             << dis2 << L"│       3. Theo lo hang                │" << endl
+             << dis2 << L"│       4. Quay lai                    │" << endl
+             << dis2 << L"└──────────────────────────────────────┘" << endl;
         cout << dis << " Lua chon: ";
         Check_valid_option(checkValidOption, select, 4);
         map<int, string> mapping;
@@ -429,16 +439,16 @@ void Goods_Object(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
     {
         string checkValidOption;
         system("cls");
-        cout << dis << " ------ DANH SACH LUA CHON CHO HANG HOA ------ " << endl
-             << dis << "|         1. Nhap hang                        |" << endl
-             << dis << "|         2. Xuat hang                        |" << endl
-             << dis << "|         3. Cap nhat                         |" << endl
-             << dis << "|         4. Xoa                              |" << endl
-             << dis << "|         5. Sap xep                          |" << endl
-             << dis << "|         6. Tim kiem                         |" << endl
-             << dis << "|         7. Hien thi thong tin               |" << endl
-             << dis << "|         8. Quay lai                         |" << endl
-             << dis << " --------------------------------------------- " << endl;
+        wcout << dis2 << L"┌─────── DANH SACH LUA CHON CHO HANG HOA ─────┐ " << endl
+             << dis2 << L"│         1. Nhap hang                        │" << endl
+             << dis2 << L"│         2. Xuat hang                        │" << endl
+             << dis2 << L"│         3. Cap nhat                         │" << endl
+             << dis2 << L"│         4. Xoa                              │" << endl
+             << dis2 << L"│         5. Sap xep                          │" << endl
+             << dis2 << L"│         6. Tim kiem                         │" << endl
+             << dis2 << L"│         7. Hien thi thong tin               │" << endl
+             << dis2 << L"│         8. Quay lai                         │" << endl
+             << dis2 << L"└─────────────────────────────────────────────┘" << endl;
         cout << dis << " Lua chon: ";
         Check_valid_option(checkValidOption, select, 8);
         switch (select)
@@ -485,16 +495,16 @@ void Customer_Object(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
     {
         string checkValidOption;
         system("cls");
-        cout << dis << " -------- DANH SACH LUA CHON CHO KHACH HANG ------- " << endl
-             << dis << "|          1. Them khach hang moi                  |" << endl
-             << dis << "|          2. Cap nhat                             |" << endl
-             << dis << "|          3. Xoa                                  |" << endl
-             << dis << "|          4. Tim kiem                             |" << endl
-             << dis << "|          5. Hien thi thong tin                   |" << endl
-             << dis << "|          6. Thanh toan hoa don                   |" << endl 
-             << dis << "|          7. Lich su thanh toan                   |" << endl            
-             << dis << "|          8. Quay lai                             |" << endl
-             << dis << " ---------------------------------------------------" << endl;
+        wcout << dis2 << L"┌────────DANH SACH LUA CHON CHO KHACH HANG─────────┐" << endl
+             << dis2 << L"│          1. Them khach hang moi                  │" << endl
+             << dis2 << L"│          2. Cap nhat                             │" << endl
+             << dis2 << L"│          3. Xoa                                  │" << endl
+             << dis2 << L"│          4. Tim kiem                             │" << endl
+             << dis2 << L"│          5. Hien thi thong tin                   │" << endl
+             << dis2 << L"│          6. Thanh toan hoa don                   │" << endl 
+             << dis2 << L"│          7. Lich su thanh toan                   │" << endl            
+             << dis2 << L"│          8. Quay lai                             │" << endl
+             << dis2 << L"└──────────────────────────────────────────────────┘" << endl;
         cout << dis << " Lua chon: ";
         Check_valid_option(checkValidOption, select, 8);
         switch (select)
@@ -534,13 +544,13 @@ void Customer_Object(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
                         system("cls");
                         lc.Show_information(id);
                         string checkValidOption;
-                        cout << dis << " ------ TINH NANG CAP NHAT ------ " << endl
-                            << dis << "|       1. Ten                    |" << endl
-                            << dis << "|       2. Dia chi                |" << endl
-                            << dis << "|       3. So dien thoai          |" << endl
-                            << dis << "|       4. Quay lai               |" << endl
-                            << dis << " --------------------------------- " << endl
-                            << dis << " Lua chon: ";
+                        wcout << dis2 <<L"┌────────TINH NANG CAP NHAT───────┐" << endl
+                            << dis2 << L"│       1. Ten                    │" << endl
+                            << dis2 << L"│       2. Dia chi                │" << endl
+                            << dis2 << L"│       3. So dien thoai          │" << endl
+                            << dis2 << L"│       4. Quay lai               │" << endl
+                            << dis2 << L"└─────────────────────────────────┘" << endl
+                            << dis2 << L" Lua chon: ";
                         Check_valid_option(checkValidOption, select, 4);
                         lc.Update(index, select);
                         if (select < 4) { cout << dis; system("pause"); }
@@ -646,13 +656,13 @@ void Customer_Object(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
                 {
                     string dis_temp = dis;
                     dis_temp.erase(0, 4);
-                    cout << dis_temp << "-------------------------------------- LICH SU THANH TOAN --------------------------------------" << endl << endl;
+                    cout << dis_temp << "________________________________________ LICH SU THANH TOAN ________________________________________" << endl << endl;
                     for (int i = 0; i < lc[index].Get_vector().size(); i++)
                     {
                         lc[index].Get_vector()[i].Show();
-                        cout << dis_temp << "________________________________________________________________________________________________" << endl << endl;
+                        cout << dis_temp << "____________________________________________________________________________________________________" << endl << endl;
                     }
-                    cout << dis_temp << "------------------------------------------- KET THUC -------------------------------------------" << endl;
+                    cout << dis_temp << "____________________________________________ Ket thuc ______________________________________________" << endl;
                 }
                 else
                 {
@@ -682,11 +692,11 @@ void Menu(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
     {
         string checkValidOption;
         system("cls");
-        cout << dis << " ------- LUA CHON DOI TUONG ------- " << endl
-             << dis << "|       1. Khach hang              |" << endl
-             << dis << "|       2. Hang hoa                |" << endl
-             << dis << "|       3. Thoat                   |" << endl
-             << dis << " ---------------------------------- " << endl;
+        wcout << dis2 << L"┌────────LUA CHON DOI TUONG────────┐" << endl
+             << dis2 << L"│       1. Khach hang              │" << endl
+             << dis2 << L"│       2. Hang hoa                │" << endl
+             << dis2 << L"│       3. Thoat                   │" << endl
+             << dis2 << L"└──────────────────────────────────┘" << endl;
         cout << dis << " Lua chon: ";
         Check_valid_option(checkValidOption, select, 3);
         switch (select)
@@ -705,6 +715,8 @@ void Menu(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
 }
 int main()
 {
+    _setmode(_fileno(stdout), _O_U16TEXT);
+    _setmode(_fileno(stdin), _O_U16TEXT);
     GoodsManagement g;
     ListCustomer lc;
     ListBill lb;
