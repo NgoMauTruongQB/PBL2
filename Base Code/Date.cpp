@@ -5,12 +5,32 @@
 #include <ctime>
 using namespace std;
 
-string distance()
+string distance(int length)
 {
     string dis = "";
-    for (int i = 0; i < 25; i++)
+    for (int i = 0; i < length; i++)
         dis += " ";
     return dis;
+}
+void Standardized(string &s)
+{
+    while (!(s.empty()) && s[0] == ' ') s.erase(0, 1);
+    while (!(s.empty()) && s[s.length() - 1] == ' ') s.erase(s.length() - 1, 1);
+    int i = 1;
+    while (!(s.empty()) && i < s.length())
+    {
+        if (s[i] == ' ' && s[i + 1] == ' ') s.erase(i+1, 1);
+        else i++;
+    }
+    s[0] = toupper(s[0]);
+    for (int i = 1; i < s.length(); i++)
+    {
+        if (s[i] == ' ') 
+        {
+            s[i+1] = toupper(s[i+1]);
+        }
+        else if (s[i-1] != ' ') s[i] = tolower(s[i]);
+    }
 }
 bool Date::Check_full_real_time = false;
 Date::Date(int day, int month, int year)
@@ -42,7 +62,7 @@ void Date::Input()
             }
             if (date[2] != '/' || date[5] != '/' || date.length() != 10)
             {
-                throw string("Date's form is incorrect...");
+                throw string("Dinh dang ngay khong dung...");
             }
             this->Day = stoi(date.substr(0,2));
             this->Month = stoi(date.substr(3,2));
@@ -62,7 +82,7 @@ void Date::Input_from_file(fstream &file_in)
     getline(file_in, date, '\n');
     if (date[2] != '/' || date[5] != '/' || date.length() != 10)
     {
-        throw string("Date's form is incorrect...");
+        throw string("Dinh dang ngay khong dung...");
     }
     this->Day = stoi(date.substr(0,2));
     this->Month = stoi(date.substr(3,2));
@@ -73,12 +93,54 @@ void Date::str_to_Date(string date)
 {
     if (date[2] != '/' || date[5] != '/' || date.length() != 10)
     {
-        throw string("Date's form is incorrect...");
+        throw string("Dinh dang ngay khong dung...");
     }
     this->Day = stoi(date.substr(0,2));
     this->Month = stoi(date.substr(3,2));
     this->Year = stoi(date.substr(6, date.length() - 6));
     this->Check_Valid();
+}
+void Date::str_to_Date_has_hour(string date)
+{
+    string time;
+    int count = 0;
+    for (int i = 0; i < date.length(); i++)
+    {
+        if (date[i] == ':') count++;
+        else if (date[i] == '|') 
+        {
+            time = date.substr(0, i);
+            date = date.substr(i+1, 10);
+            break;
+        }
+    }
+    if (count != 2 || date[2] != '/' || date[5] != '/' || date.length() != 10)
+        throw string("Thoi gian khong hop le...");
+    count = 0;
+    int temp;
+    for (int i = 0; i < time.length(); i++)
+    {
+        if (time[i] == ':')
+        {
+            count++;
+            if (count == 1) 
+            {
+                this->hour = stoi(time.substr(0,i));
+                temp = i;
+            }
+            else if (count == 2) 
+            {
+                this->minute = stoi(time.substr(temp+1, i - temp - 1));
+                this->second = stoi(time.substr(i+1, time.length() - i - 1));
+                break;
+            }
+        }
+    }
+    this->Day = stoi(date.substr(0,2));
+    this->Month = stoi(date.substr(3,2));
+    this->Year = stoi(date.substr(6, date.length() - 6));
+    this->Check_Valid();
+    
 }
 void Date::Output()
 {
@@ -93,7 +155,7 @@ void Date::Output()
         cout << this->Year << endl; 
     }
     else
-        cout << "Time: " << this->hour << ":" << this->minute << ":" << this->second << " Date:"
+        cout << "Gio: " << this->hour << ":" << this->minute << ":" << this->second << " Ngay:"
         << this->Day << "/" << this->Month << "/" << this->Year << endl;
 }
 void Date::Output_to_file(ofstream& out)
@@ -109,7 +171,7 @@ void Date::Output_to_file(ofstream& out)
         out << this->Year << endl; 
     }
     else
-        out << "Time: " << this->hour << ":" << this->minute << ":" << this->second << " Date:"
+        out << "Gio: " << this->hour << ":" << this->minute << ":" << this->second << " Ngay:"
         << this->Day << "/" << this->Month << "/" << this->Year << endl;
 }
 bool Date::Check_Leap_Year()
@@ -132,10 +194,14 @@ int Date::Month_Day()
 void Date::Check_Valid()
 {
     if ((this->Day < 1) || (this->Day > this->Month_Day()) || (this->Month < 1) || (this->Month > 12) || (this->Year < 1))
-        throw string("Date is invalid...");
+        throw string("Ngay khong hop le...");
 }
 const Date& Date::operator=(const Date& d)
 {
+    this->Check_full_real_time = d.Check_full_real_time;
+    this->hour = d.hour;
+    this->minute = d.minute;
+    this->second = d.second;
     this->Day = d.Day;
     this->Month = d.Month;
     this->Year = d.Year;
@@ -205,6 +271,22 @@ int Date::Get_second()
 string Date::to_String()
 {
     string date_str = "";
+    date_str += (this->Day < 10) ? ("0" + to_string(this->Day)) : to_string(this->Day);
+    date_str += "/";
+    date_str += (this->Month < 10) ? ("0" + to_string(this->Month)) : to_string(this->Month);
+    date_str += "/";
+    date_str += to_string(this->Year);
+    return date_str;
+}
+string Date::to_String_has_hour()
+{
+    string date_str = "";
+    date_str += to_string(this->hour);
+    date_str += ":";
+    date_str += to_string(this->minute);
+    date_str += ":";
+    date_str += to_string(this->second);
+    date_str += "|";
     date_str += (this->Day < 10) ? ("0" + to_string(this->Day)) : to_string(this->Day);
     date_str += "/";
     date_str += (this->Month < 10) ? ("0" + to_string(this->Month)) : to_string(this->Month);

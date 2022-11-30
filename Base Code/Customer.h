@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
-#include <vector>
 #include "Goods.h"
 #include "Bill.h"
 using namespace std;
+class Bill;
 class ListBill;
 class Customer
 {
@@ -12,20 +12,22 @@ private:
 	string Name;
 	string Address;
 	string PhoneNumber;
-    string Bill_ID;
+    vector<Bill> Lb;
 public:
-	Customer(string = "", string = "", string = "", string = "", string = "");
+	Customer(string = "", string = "", string = "", string = "");
 	~Customer();
-	//void Customer_out();
 	void Set_Name(string);
 	void Set_Address(string);
 	void Set_PhoneNumber(string);
-	void Set_Bill_ID(string);
+	void Add_bill(Bill&);
 	string Get_ID();
 	string Get_name();
 	string Get_address();
 	string Get_PhoneNumber();
-	string Get_Bill_ID();
+	vector<Bill>& Get_vector();
+	void Update_bill(Bill);
+	void Input_from_file(fstream&);
+	Customer& operator=(Customer&);
 	friend istream& operator>>(istream&, Customer&);
 	friend ostream& operator<<(ostream&, const Customer&);
 };
@@ -35,14 +37,15 @@ class ListCustomer
 private:
 	vector<Customer> List;
 public:
+	ListCustomer();
 	~ListCustomer();
+	int Get_length();
 	bool Check_valid_ID(string);
 	Customer& operator[](int);
 	int Find_id(string);
-	Customer& Get_customer(string);
+	void Input_from_file(string);
 	void Add(const Customer&);
-	void Update(string);
+	void Update(int, int);
 	void Delete(string);
-	void Find();
-	void Show_information(ListBill&, string = "");
+	void Show_information(string = "");
 };

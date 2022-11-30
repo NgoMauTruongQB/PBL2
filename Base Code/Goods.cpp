@@ -12,9 +12,8 @@ Goods::Goods()
     this->Amount = 0;
     this->Cost = 0;
     this->Sale_cost = 0;
-    this->Status = 0;
 }
-Goods::Goods(string ID, string batch, string name, string type, string origin, Date exp, int amount, Date imp_date, float cost, float sale_cost, Date exp_date, int status)
+Goods::Goods(string ID, string batch, string name, string type, string origin, Date exp, int amount, Date imp_date, float cost, float sale_cost)
 {
     this->ID = ID;
     this->Batch = batch;
@@ -26,20 +25,18 @@ Goods::Goods(string ID, string batch, string name, string type, string origin, D
     this->Import_date = imp_date;
     this->Cost = cost;
     this->Sale_cost = sale_cost;
-    this->Export_date = exp_date;
-    this->Status = status;
 }
 void Goods::Input()
 {
-    cout << distance() << " ----- ENTER GOODS INFORMATION ----- " << endl;
-    cout << distance() << " Batch: "; getline(cin, this->Batch); Standardized(this->Batch);
-    cout << distance() << " Name: "; getline(cin,this->Goods_name); Standardized(this->Goods_name);
-    cout << distance() << " Origin: "; getline(cin,this->Origin); Standardized(this->Origin);
-    cout << distance() << " Type: "; getline(cin, this->Type); Standardized(this->Type); 
-    cout << distance() << " EXP"; this->EXP.Input();
-    cout << distance() << " Import amount: "; cin >> this->Amount;
-    cout << distance() << " Total cost: "; cin >> this->Cost; cin.ignore();
-    cout << distance() << " Import date"; this->Import_date.Input();
+    cout << distance() << " ------- THONG TIN NHAP HANG ------- " << endl;
+    cout << distance() << " Lo: "; getline(cin, this->Batch); Standardized(this->Batch);
+    cout << distance() << " Ten: "; getline(cin,this->Goods_name); Standardized(this->Goods_name);
+    cout << distance() << " Nguon goc: "; getline(cin,this->Origin); Standardized(this->Origin);
+    cout << distance() << " Loai: "; getline(cin, this->Type); Standardized(this->Type); 
+    cout << distance() << " Han su dung"; this->EXP.Input();
+    cout << distance() << " So luong nhap: "; cin >> this->Amount;
+    cout << distance() << " Tong gia nhap: "; cin >> this->Cost; cin.ignore();
+    cout << distance() << " Ngay nhap"; this->Import_date.Input();
     cout << distance() << " ----------------------------------- " << endl;
 }
 void Goods::Input_from_file(fstream &file_in)
@@ -65,14 +62,14 @@ void Goods::Input_from_file(fstream &file_in)
 }
 void Goods::Output()
 {
-    cout << setw(3) << this->Batch << " |"
-         << setw(18) << this->Goods_name << "      |"
-         << setw(14) << this->Origin << "     |"
-         << setw(9) << this->Type << " |"
+    cout << setw(7) << this->Batch << " |"
+         << setw(44) << this->Goods_name << " |"
+         << setw(12) << this->Origin << " |"
+         << setw(18) << this->Type << " |"
          << "    " << this->EXP.to_String() << "  |";
     cout << setw(9) << this->Amount << " |"
          << "  " << this->Import_date.to_String() << " |"
-         << setw(10) << this->Cost << "    |" << endl;
+         << setw(13) << setprecision(10) <<this->Cost << " |" << endl;
 }
 void Goods::Set_id()
 {
@@ -127,18 +124,6 @@ void Goods::Set_sale_cost()
 {
     this->Sale_cost = (this->Cost + this->Cost*5/100);
 }
-void Goods::Set_export_amount(int expAmount)
-{
-    this->Export_amount = expAmount;
-}
-void Goods::Set_export_date(string expDate)
-{
-    this->Export_date.str_to_Date(expDate);
-}
-void Goods::Set_status(int status)
-{
-    this->Status = status;
-}
 string Goods::Get_id()
 {
     return this->ID;
@@ -179,25 +164,7 @@ float Goods::Get_sale_cost()
 {
     return this->Sale_cost;
 }
-int Goods::Get_export_amount()
-{
-    return this->Export_amount;
-}
-Date& Goods::Get_export_date()
-{
-    return this->Export_date;
-}
-int Goods::Get_status()
-{
-    return this->Status;
-}
-// void Goods::Set_amount_after_export(const int& amount)
-// {
-//     if (amount > this->Import_amount) throw string("Amount is out of range");
-//     else
-//         this->Import_amount -= amount;
-// }
-const Goods& Goods::operator=(const Goods& other)
+Goods& Goods::operator=(const Goods& other)
 {
     this->ID = other.ID;
     this->Batch = other.Batch;
@@ -209,31 +176,9 @@ const Goods& Goods::operator=(const Goods& other)
     this->Import_date = other.Import_date;
     this->Cost = other.Cost;
     this->Sale_cost = other.Sale_cost;
-    this->Export_date = other.Export_date;
-    this->Status = other.Status;
     return (*this);
 }
 Goods::~Goods(){
-}
-void Standardized(string &s)
-{
-    while (!(s.empty()) && s[0] == ' ') s.erase(0, 1);
-    while (!(s.empty()) && s[s.length() - 1] == ' ') s.erase(s.length() - 1, 1);
-    int i = 1;
-    while (!(s.empty()) && i < s.length())
-    {
-        if (s[i] == ' ' && s[i + 1] == ' ') s.erase(i+1, 1);
-        else i++;
-    }
-    s[0] = toupper(s[0]);
-    for (int i = 1; i < s.length(); i++)
-    {
-        if (s[i] == ' ') 
-        {
-            s[i+1] = toupper(s[i+1]);
-        }
-        else if (s[i-1] != ' ') s[i] = tolower(s[i]);
-    }
 }
 void Swap(Goods& a, Goods& b)
 {

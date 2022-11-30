@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 using namespace std;
-string distance();
+string distance(int = 65);
+void Standardized(string&);
+
 class Date
 {
     private:
@@ -13,6 +15,7 @@ class Date
         void Input();
         void Input_from_file(fstream&);
         void str_to_Date(string);
+        void str_to_Date_has_hour(string);
         void Output();
         void Output_to_file(ofstream&);
         bool Check_Leap_Year();
@@ -31,6 +34,7 @@ class Date
         int Get_minute();
         int Get_second();
         string to_String();
+        string to_String_has_hour();
         void Set_full_real_time();
         void Set_day_real_time();
         ~Date();
