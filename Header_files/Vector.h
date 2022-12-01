@@ -14,8 +14,8 @@ class vector
     public:
         vector();
         ~vector();
-        int size(); // trả về số lượng phần tử được sử dụng trong vector
-        int capacity();
+        int size() const; // trả về số lượng phần tử được sử dụng trong vector
+        int capacity() const; // trả về sức chứa của vector
         bool empty(); // Trả về dữ liệu vùng chứa có trống hay không, nếu trống thì trả về True, nếu có phần tử thì trả về False
         const vector<T>& operator= (const vector<T> &vt); 
         T& operator[] (const int index); 
@@ -60,13 +60,13 @@ vector<T>::~vector()
 }
 
 template <typename T>
-int vector<T>::size()
+int vector<T>::size() const 
 {
     return this->Size;
 }
 
 template <typename T>
-int vector<T>::capacity()
+int vector<T>::capacity() const
 {
     return this->Capacity;
 }
@@ -87,7 +87,6 @@ const vector<T>& vector<T>::operator=(const vector<T> &vt)
         this->array[i] = vt.array[i];
     return *this;
 }
-
 
 template <typename T>
 T& vector<T>::operator[](const int index)
@@ -156,8 +155,17 @@ void vector<T>::erase(const int& pos)
     {
         for(int i = pos; i < this->Size - 1; i++)
             this->array[i] = this->array[i + 1];
-        delete (this->array + this->Size - 1);
         this->Size--;
+        if (this->Size < this->Capacity / 2)
+        {
+            T* newArray = new T[this->Capacity / 2];
+            for (int i = 0; i < this->Size; i++)
+                newArray[i] = this->array[i];
+            delete[] this->array;
+            this->array = new T[this->Capacity / 2];
+            this->array = newArray;
+            this->Capacity /= 2;
+        }
     }
 }
 template <typename T>
@@ -165,7 +173,6 @@ void vector<T>::clear()
 {
     this->Size = 0;
 }
-
 template <typename T>
 T* vector<T>::data()
 {

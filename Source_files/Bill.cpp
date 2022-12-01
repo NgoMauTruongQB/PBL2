@@ -1,4 +1,4 @@
-#include "Bill.h"
+#include "../Header_files/Bill.h"
 //========================================= Class Bill ============================================
 
 Bill::Bill() : ID(""), Customer_of_bill(nullptr), Payment_status(false)
@@ -39,7 +39,7 @@ void Bill::Set_PayStatus(bool status)
 {
     this->Payment_status = status;
 }
-string Bill::Get_ID()
+string Bill::Get_ID() const
 {
     return this->ID;
 }
@@ -51,7 +51,7 @@ Date Bill::Get_date_of_bill()
 {
     return this->Date_of_bill;
 }
-bool Bill::Get_PayStatus()
+bool Bill::Get_PayStatus() const
 {
     return this->Payment_status;
 }

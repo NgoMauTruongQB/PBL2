@@ -16,15 +16,18 @@ private:
 public:
 	Customer(string = "", string = "", string = "", string = "");
 	~Customer();
+
 	void Set_Name(string);
 	void Set_Address(string);
 	void Set_PhoneNumber(string);
 	void Add_bill(Bill&);
-	string Get_ID();
-	string Get_name();
-	string Get_address();
-	string Get_PhoneNumber();
+
+	string Get_ID() const;
+	string Get_name() const;
+	string Get_address() const;
+	string Get_PhoneNumber() const;
 	vector<Bill>& Get_vector();
+
 	void Update_bill(Bill);
 	void Input_from_file(fstream&);
 	Customer& operator=(Customer&);
@@ -39,7 +42,7 @@ private:
 public:
 	ListCustomer();
 	~ListCustomer();
-	int Get_length();
+	int Get_length() const;
 	bool Check_valid_ID(string);
 	Customer& operator[](int);
 	int Find_id(string);

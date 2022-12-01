@@ -1,5 +1,5 @@
-#include "Customer.h"
-#include "Date.h"
+#include "../Header_files/Customer.h"
+#include "../Header_files/Date.h"
 #include <string>
 #include <iostream>
 // #include "NumberDuck.h"
@@ -38,19 +38,19 @@ void Customer::Add_bill(Bill& b)
 	b.Add_customer(this);
 	this->Lb.push_back(b);
 }
-string Customer::Get_ID()
+string Customer::Get_ID() const
 {
 	return this->ID;
 }
-string Customer::Get_name()
+string Customer::Get_name() const
 {
 	return this->Name;
 }
-string Customer::Get_address()
+string Customer::Get_address() const
 {
 	return this->Address;
 }
-string Customer::Get_PhoneNumber()
+string Customer::Get_PhoneNumber() const
 {
 	return this->PhoneNumber;
 }
@@ -62,7 +62,7 @@ void Customer::Update_bill(Bill b)
 {
 	for (int i = 0; i < this->Lb.size(); i++)
 	{
-		if (this->Lb[i].Get_ID().compare(b.Get_ID()) == 0)
+		if (this->Lb[i].ID.compare(b.ID) == 0)
 		{
 			this->Lb[i] = b;
 			break;
@@ -111,7 +111,7 @@ ostream& operator<<(ostream& out, const Customer& c)
 // =================================== Class ListCustomer ==========================================
 ListCustomer::ListCustomer() {}
 ListCustomer::~ListCustomer() {}
-int ListCustomer::Get_length()
+int ListCustomer::Get_length() const
 {
 	return this->List.size();
 }
