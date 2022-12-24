@@ -197,12 +197,16 @@ void ListCustomer::Update(int index, int option)
 	}
 
 }
-void ListCustomer::Delete(string id)
+void ListCustomer::Delete(string id, ListBill& lb)
 {
 	int index = this->Find_id(id);
     if (index == -1) throw string("Khong tim thay ID nay...");
 	else
 	{
+		for (int i = 0; i < (*this)[index].Get_vector().size(); i++)
+		{
+			lb.Delete((*this)[index].Get_vector()[i].Get_ID());
+		}
 		this->List.erase(index);
 	}	
 }
@@ -216,7 +220,7 @@ void ListCustomer::Show_information(string id)
     }
 	else if (id.compare("") == 0)
 	{
-		dis = distance(35);
+		dis = distance(20);
 		cout <<    dis << " ___________________________________________________________________________________________________________________________________________ " << endl
 				<< dis << "                                                            THONG TIN KHACH HANG                                                             " << endl
 				<< dis << " ------------------------------------------------------------------------------------------------------------------------------------------- " << endl
@@ -235,7 +239,7 @@ void ListCustomer::Show_information(string id)
 	}
 	else
 	{
-		dis = distance(35);
+		dis = distance(20);
 		cout <<    dis << " ___________________________________________________________________________________________________________________________________________ " << endl
 				<< dis << "                                                             THONG TIN KHACH HANG                                                            " << endl
 				<< dis << " ------------------------------------------------------------------------------------------------------------------------------------------- " << endl

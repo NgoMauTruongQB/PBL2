@@ -251,9 +251,7 @@ void Export(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
         {
             if (check_export)
             {
-                string file_name = "Bill.txt";
-                // cout << dis << "Ten tep: "; 
-                // checkValidFileName(file_name);
+                string file_name = "../Bill.txt";
                 lb[lb.Get_vector().size()-1].Print(file_name);
                 cout << dis << "In hoa don thanh cong!..." << endl;
                 check_export = false;
@@ -637,7 +635,7 @@ void Customer_Object(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
                 {
                     string id;
                     cout << dis << "Nhap ID cua khach hang ma ban muon xoa: "; getline(cin, id);
-                    lc.Delete(id);
+                    lc.Delete(id, lb);
                     cout << dis << "Xoa khach hang co ID: " << id << " thanh cong..." << endl;
                     cout << dis; system("pause");
                     break;
@@ -771,7 +769,7 @@ void Menu(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
              << dis << "|       3. Thoat                   |" << endl
              << dis << " ---------------------------------- " << endl;
         cout << dis << " Lua chon: ";
-        Check_valid_option(checkValidOption, select, 3);
+        Check_valid_option(checkValidOption, select, 4);
         switch (select)
         {
         case 1:
@@ -781,7 +779,7 @@ void Menu(GoodsManagement &g, ListCustomer &lc, ListBill &lb)
             Goods_Object(g, lc, lb);
             break;
         default:
-            // Update_file_database(g, lc, lb);
+            Update_file_database(g, lc, lb);
             Update_file_backupData(g,lc,lb);
             cout << endl << dis << "Cam on ban da su dung dich vu cua chung toi ^_^...  Chuc ban mot ngay tot lanh!" << endl << endl;
         }   
